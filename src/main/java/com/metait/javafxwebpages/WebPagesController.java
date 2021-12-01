@@ -230,8 +230,12 @@ public class WebPagesController {
         buttonListAll.setSelected(false);
         // System.out.println("pressedButtonGlobalSearch");
         // to filter
-        final String strSearch = textFieldSearch.getText();
         final boolean bToLowerCaseLetters = bSearchWithLowerCaseStrings;
+        String strAtFirstSearch = textFieldSearch.getText();
+        if (bToLowerCaseLetters && strAtFirstSearch != null)
+            strAtFirstSearch = strAtFirstSearch.toLowerCase();
+        final String strSearch = strAtFirstSearch;
+
         FilteredList<WebAddresItem> listFiltered = webAddressRows.filtered(
                 new Predicate<WebAddresItem>(){
                     public boolean test(WebAddresItem t){
@@ -283,9 +287,13 @@ public class WebPagesController {
         */
 
         buttonListAll.setSelected(false);
-
+        
         final boolean bToLowerCaseLetters = bSearchWithLowerCaseStrings;
-        final String strSearch = textFieldSearch.getText();
+        String strAtFirstSearch = textFieldSearch.getText();
+        if (bToLowerCaseLetters && strAtFirstSearch != null)
+            strAtFirstSearch = strAtFirstSearch.toLowerCase();
+        final String strSearch = strAtFirstSearch;
+
         columnName = COLUMNHEADERS.cnstWebAddress;
         if (radioButtonNr.isSelected()) {
             columnName = COLUMNHEADERS.cnstWebAddress;
