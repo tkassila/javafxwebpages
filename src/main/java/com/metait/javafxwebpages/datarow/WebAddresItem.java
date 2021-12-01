@@ -1,6 +1,5 @@
 package com.metait.javafxwebpages.datarow;
 
-import com.metait.javafxwebpages.WebPagesController;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -15,9 +14,10 @@ public class WebAddresItem {
         setKeyword(jsontitem.getStrKeywore());
         setTitle(jsontitem.getStrTitle());
         setStar(jsontitem.getStrStar());
+        setBookmark(jsontitem.getiBookMark());
     }
 
-    public WebAddresItem(int iNr, int iSTar, String strDAte, String keywords, String webAddress, String title)
+    public WebAddresItem(int iNr, int iSTar, String strDAte, String keywords, String webAddress, String title, int bookMark)
     {
         orderProperty().set(iNr);
         dateProperty().set(strDAte);
@@ -25,6 +25,7 @@ public class WebAddresItem {
         starProperty().set(getStartsAfter(iSTar));
         webaddressProperty().set(webAddress);
         titleProperty().set(title);
+        bookmarkProperty().set(bookMark);
     }
 
     private IntegerProperty orderProperty;
@@ -40,6 +41,21 @@ public class WebAddresItem {
         if (orderProperty == null)
             orderProperty = new SimpleIntegerProperty(this, "order");
         return orderProperty;
+    }
+
+    private IntegerProperty bookmarkProperty;
+    public void setBookmark(int iValue) {
+        if (bookmarkProperty == null)
+            bookmarkProperty();
+        bookmarkProperty.set(iValue); }
+    public int getBookmark() {
+        if (bookmarkProperty == null)
+            bookmarkProperty();
+        return bookmarkProperty.get(); }
+    public IntegerProperty bookmarkProperty() {
+        if (bookmarkProperty == null)
+            bookmarkProperty = new SimpleIntegerProperty(this, "bookmark");
+        return bookmarkProperty;
     }
 
     private StringProperty titleProperty;
@@ -130,6 +146,7 @@ public class WebAddresItem {
     {
         return "" + orderProperty().get() +" " +dateProperty().get() +" " +
         keywordProperty().get() +" " +starProperty().get() +" " +
-        titleProperty().get() +" " +webaddressProperty().get() ;
+        titleProperty().get() +" " +webaddressProperty().get() + " " +
+        bookmarkProperty().get() ;
     }
 }

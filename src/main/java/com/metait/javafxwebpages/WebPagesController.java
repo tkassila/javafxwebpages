@@ -33,7 +33,6 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -80,6 +79,8 @@ public class WebPagesController {
     @FXML
     private TableColumn<WebAddresItem,String> tableColumnTitle;
     @FXML
+    private TableColumn<WebAddresItem,Integer> tableColumnBookMk;
+    @FXML
     private Label labelDate;
     @FXML
     private Label labelOrder;
@@ -114,7 +115,13 @@ public class WebPagesController {
     @FXML
     private RadioButton radioButtonGlobal;
     @FXML
-    private Button buttonListAll;
+    private ToggleButton buttonListAll;
+    @FXML
+    private ToggleButton buttonBookMark;
+    @FXML
+    private RadioButton radioButtonBookMark;
+    @FXML
+    private TextField textFieldShow;
 
     /*
     @FXML
@@ -147,6 +154,45 @@ public class WebPagesController {
     //  private  KeyCombination pasteKeyCombination = new KeyCodeCombination(KeyCode.V,KeyCombination.CONTROL_DOWN);
 
     private EventHandler<KeyEvent> keyEventHanler = null;
+
+    private ChangeListener<Boolean> focuslistener = new ChangeListener<Boolean>() {
+        @Override
+        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
+        {
+            if (newValue.booleanValue()) {
+                focusGainedOfControl(observable);
+            } else {
+                focusLostOfControl(observable);
+            }
+        }
+    };
+
+    private void focusGainedOfControl(ObservableValue stackPane)
+    {
+        /*
+        System.out.println("focus gained ObservableValue " +stackPane.getClass().getName());
+        System.out.println("focus gained ObservableValue " +stackPane.getValue());
+         */
+        if (textFieldWebAddress.isFocused())
+            textFieldShow.setText(textFieldWebAddress.getText());
+        else
+        // System.out.println("textFieldKeyWord=" +textFieldKeyWord.isFocused());
+        if (textFieldKeyWord.isFocused())
+            textFieldShow.setText(textFieldKeyWord.getText());
+        else
+        //System.out.println("textFieldTitle=" +textFieldTitle.isFocused());
+        if (textFieldTitle.isFocused())
+            textFieldShow.setText(textFieldTitle.getText());
+    }
+
+    private void focusLostOfControl(ObservableValue stackPane)
+    {
+        /*
+        System.out.println("focus lost ObservableValue " +stackPane.getClass().getName());
+        System.out.println("focus lost ObservableValue " +stackPane.getValue());
+         */
+    }
+
     public void handleKeyEvent(KeyEvent event) {
         keyEventHanler.handle(event);
     }
@@ -165,9 +211,11 @@ public class WebPagesController {
         if (textFieldSearch.getText().trim().length()==0)
         {
             tableViewWebPages.setItems(webAddressRows);
+            buttonListAll.setSelected(true);
             return;
         }
 
+        buttonListAll.setSelected(false);
         // System.out.println("pressedButtonGlobalSearch");
         // to filter
         final String strSearch = textFieldSearch.getText();
@@ -183,11 +231,12 @@ public class WebPagesController {
     @FXML
     protected void pressedButtonSearch()
     {
-        System.out.println("pressedButtonSearch");
+    //    System.out.println("pressedButtonSearch");
         /*
         if (textFieldSearch.getText().trim().length()==0)
         {
             tableViewWebPages.setItems(webAddressRows);
+            buttonListAll.setSelected(true);
             return;
         }
          */
@@ -214,6 +263,8 @@ public class WebPagesController {
         ret = item.titleProperty().toString().contains(search);
         break;
         */
+
+        buttonListAll.setSelected(false);
 
         final String strSearch = textFieldSearch.getText();
         columnName = COLUMNHEADERS.cnstWebAddress;
@@ -278,6 +329,17 @@ public class WebPagesController {
                         }
                     });
         }
+        else
+        if (radioButtonBookMark.isSelected()) {
+            columnName = COLUMNHEADERS.cnstDate;
+            listFiltered = webAddressRows.filtered(
+                    new Predicate<WebAddresItem>(){
+                        public boolean test(WebAddresItem t){
+                            return new Integer(t.getBookmark()).toString().contains(strSearch);
+                        }
+                    });
+        }
+
         /*
         FilteredList<WebAddresItem> listFiltered = webAddressRows.filtered(
                 new Predicate<WebAddresItem>(){
@@ -326,6 +388,12 @@ public class WebPagesController {
     @FXML
     public void initialize() {
 
+        buttonListAll.setSelected(true);
+
+        textFieldWebAddress.focusedProperty().addListener(focuslistener);
+        textFieldKeyWord.focusedProperty().addListener(focuslistener);
+        textFieldTitle.focusedProperty().addListener(focuslistener);
+
         radioButtonChangeListener = new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
@@ -349,6 +417,7 @@ public class WebPagesController {
         radioButtonStar.selectedProperty().addListener(radioButtonChangeListener);
         radioButtonTitle.selectedProperty().addListener(radioButtonChangeListener);
         radioButtonWebAddress.selectedProperty().addListener(radioButtonChangeListener);
+        radioButtonBookMark.selectedProperty().addListener(radioButtonChangeListener);
 
         buttonGlobalSearch.setDisable(false);
         buttonSearch.setDisable(true);
@@ -360,6 +429,15 @@ public class WebPagesController {
         labelSearchTitle.setFocusTraversable(true);
          */
 
+        textFieldShow.setStyle("-fx-font-weight: bold");
+        tableViewWebPages.setStyle("-fx-font-weight: bold");
+        textFieldTitle.setStyle("-fx-font-weight: bold");
+        textFieldKeyWord.setStyle("-fx-font-weight: bold");
+        textFieldWebAddress.setStyle("-fx-font-weight: bold");
+        labelOrder.setStyle("-fx-font-weight: bold");
+        labelDate.setStyle("-fx-font-weight: bold");
+        textFieldSearch.setStyle("-fx-font-weight: bold");
+
         tableColumnNr.setCellValueFactory(new PropertyValueFactory("order"));
         tableColumnNr.setStyle( "-fx-alignment: CENTER-RIGHT;");
         tableColumnDate.setCellValueFactory(new PropertyValueFactory("date"));
@@ -370,7 +448,8 @@ public class WebPagesController {
         tableColumnWebAddress.setCellValueFactory(new PropertyValueFactory("webaddress"));
         tableColumnKeyWord.setCellValueFactory(new PropertyValueFactory("keyword"));
         tableColumnTitle.setCellValueFactory(new PropertyValueFactory("title"));
-
+        tableColumnBookMk.setCellValueFactory(new PropertyValueFactory("bookmark"));
+        tableColumnBookMk.setStyle( "-fx-alignment: CENTER;");
         /*
         tableViewWebPages.setStyle(".table-row-cell:selected .tissue-cell {\n" +
                 "    -fx-background-color: #F5AD11;\n" +
@@ -408,8 +487,10 @@ public class WebPagesController {
         tableViewWebPages.getFocusModel().focusedCellProperty().addListener((obs, oldVal, newVal) -> {
             if(newVal.getTableColumn() != null){
               //  tableViewWebPages.getSelectionModel().selectRange(0, newVal.getTableColumn(), tableViewWebPages.getItems().size(), newVal.getTableColumn());
+                /*
                 System.out.println("Selected TableColumn: "+ newVal.getTableColumn().getText());
                 System.out.println("Selected column index: "+ newVal.getColumn());
+                 */
             }
         });
 
@@ -498,6 +579,7 @@ public class WebPagesController {
 
     private void editSelectedWebAddress(WebAddresItem newSelection)
     {
+        textFieldShow.setText("");
         labelDate.setText(""+newSelection.getDate());
         labelOrder.setText(""+newSelection.getOrder());
         textFieldKeyWord.setText(""+newSelection.getKeyword());
@@ -516,6 +598,7 @@ public class WebPagesController {
             comboStar.setValue(null);
         textFieldTitle.setText(newSelection.getTitle());
         textFieldWebAddress.setText(""+newSelection.getWebaddress());
+        buttonBookMark.setSelected(newSelection.getBookmark()!=0);
     }
 
     private void initGridPane()
@@ -721,7 +804,7 @@ public class WebPagesController {
             e.printStackTrace();
             labelMsg.setText("Error: " +e.getMessage());
         }
-        WebAddresItem item = new WebAddresItem(iOrder, iStars, getTodayString(), itemKWord, fromClibBoard, title);
+        WebAddresItem item = new WebAddresItem(iOrder, iStars, getTodayString(), itemKWord, fromClibBoard, title, 0);
         webAddressRows.add(item);
         saveWebAddressItems();
     }
@@ -989,7 +1072,7 @@ public class WebPagesController {
     @FXML
     protected void pressedButtonOpenBrowser()
     {
-        System.out.println("buttonOpenBrowser");
+     //   System.out.println("buttonOpenBrowser");
         WebAddresItem item = tableViewWebPages.getSelectionModel().getSelectedItem();
         if (item != null)
         {
@@ -1015,5 +1098,48 @@ public class WebPagesController {
     protected void pressedButtonListAll()
     {
         tableViewWebPages.setItems(webAddressRows);
+        buttonListAll.setSelected(true);
+    }
+
+    @FXML
+    protected void pressedButtonBookMark()
+    {
+     //   System.out.println("pressedButtonBookMark");
+        WebAddresItem item = tableViewWebPages.getSelectionModel().getSelectedItem();
+        if (item != null)
+        {
+            boolean bModified = false;
+            if (buttonBookMark.isSelected() && item.getBookmark() == 0) {
+                item.setBookmark(1);
+                bModified = true;
+            }
+            else
+            if (!buttonBookMark.isSelected() && item.getBookmark() != 0) {
+                item.setBookmark(0);
+                bModified = true;
+            }
+            if (bModified)
+            {
+                WebAddresItem searchItem = null;
+                int i = 0;
+                for (WebAddresItem item2 : webAddressRows)
+                {
+                    if (item2 == null)
+                    {
+                        i++;
+                        continue;
+                    }
+                    if (item2.getOrder() == item.getOrder()) {
+                        searchItem = item2;
+                        break;
+                    }
+                    i++;
+                }
+                if (searchItem != null) {
+                    webAddressRows.set(i, item);
+                    saveWebAddressItems();
+                }
+            }
+        }
     }
 }

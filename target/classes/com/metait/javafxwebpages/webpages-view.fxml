@@ -10,6 +10,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.FlowPane?>
@@ -17,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.web.WebView?>
 
-<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="731.0" prefWidth="1221.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="759.0" prefWidth="1221.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox layoutY="2.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="772.0" prefWidth="1221.0" spacing="1.0" AnchorPane.bottomAnchor="-0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -44,6 +45,7 @@
                         <ToggleGroup fx:id="column_search" />
                      </toggleGroup>
                   </RadioButton>
+                  <RadioButton fx:id="radioButtonBookMark" layoutX="10.0" layoutY="15.0" minWidth="-Infinity" mnemonicParsing="false" prefHeight="17.0" prefWidth="81.0" text="Bookmark" toggleGroup="$column_search" />
                   <RadioButton fx:id="radioButtonDate" layoutX="10.0" layoutY="10.0" minWidth="-Infinity" mnemonicParsing="false" prefHeight="17.0" prefWidth="58.0" text="Date" toggleGroup="$column_search" />
                   <RadioButton fx:id="radioButtonStar" layoutX="58.0" layoutY="10.0" minWidth="-Infinity" mnemonicParsing="false" prefHeight="17.0" prefWidth="51.0" text="Star" toggleGroup="$column_search" />
                   <RadioButton fx:id="radioButtonKeyWord" layoutX="136.0" layoutY="10.0" minWidth="-Infinity" mnemonicParsing="false" prefHeight="17.0" prefWidth="76.0" text="Keyoword" toggleGroup="$column_search" />
@@ -52,7 +54,7 @@
                   <RadioButton fx:id="radioButtonGlobal" layoutX="314.0" layoutY="15.0" minWidth="-Infinity" mnemonicParsing="false" prefHeight="17.0" prefWidth="98.0" selected="true" text="Global search" toggleGroup="$column_search" />
                   <Button fx:id="buttonGlobalSearch" mnemonicParsing="false" onAction="#pressedButtonGlobalSearch" text="Search globally" />
                   <Button fx:id="buttonSearch" mnemonicParsing="false" onAction="#pressedButtonSearch" text="Column search" />
-                  <Button fx:id="buttonListAll" layoutX="632.0" layoutY="15.0" mnemonicParsing="false" onAction="#pressedButtonListAll" text="List All" />
+                  <ToggleButton fx:id="buttonListAll" mnemonicParsing="false" onAction="#pressedButtonListAll" text="List All" />
                   <Button fx:id="buttonHelp" minWidth="-Infinity" mnemonicParsing="false" onAction="#pressedButtonHelp" prefHeight="25.0" prefWidth="52.0" text="Help" />
                </children>
                <padding>
@@ -67,23 +69,33 @@
                   <Insets bottom="5.0" top="5.0" />
                </VBox.margin>
             </Separator>
-            <FlowPane focusTraversable="true" hgap="3.0" vgap="3.0">
-               <children>
-                  <Label fx:id="labelOrder" minHeight="-Infinity" minWidth="-Infinity" prefHeight="32.0" prefWidth="48.0" />
-                  <Label fx:id="labelDate" minHeight="-Infinity" minWidth="-Infinity" prefHeight="32.0" prefWidth="77.0" />
-                  <ComboBox fx:id="comboStar" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="32.0" prefWidth="67.0" promptText="Star" />
-                  <TextField fx:id="textFieldKeyWord" minHeight="-Infinity" minWidth="-Infinity" prefHeight="32.0" prefWidth="183.0" promptText="Keywords" />
-                  <TextField fx:id="textFieldTitle" layoutX="212.0" layoutY="10.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="32.0" prefWidth="396.0" promptText="Title" />
-                  <TextField fx:id="textFieldWebAddress" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="32.0" prefWidth="732.0" promptText="Web address" />
-                  <Button fx:id="buttonSave" minWidth="-Infinity" mnemonicParsing="false" onAction="#pressedButtonSave" prefHeight="31.0" prefWidth="48.0" text="Save" />
-                  <Button fx:id="buttonOpenBrowser" mnemonicParsing="false" onAction="#pressedButtonOpenBrowser" text="Open in browser" />
-                  <Button fx:id="buttonDelete" mnemonicParsing="false" onAction="#pressedButtonDelete" text="Delete" />
-                  <Button fx:id="buttonAdd" mnemonicParsing="false" prefHeight="15.0" prefWidth="53.0" text="Add" />
-               </children>
+            <VBox prefHeight="117.0" prefWidth="1215.0" spacing="3.0">
                <VBox.margin>
                   <Insets bottom="3.0" top="3.0" />
                </VBox.margin>
-            </FlowPane>
+               <children>
+                  <TextField fx:id="textFieldShow" editable="false" prefHeight="30.0" prefWidth="1215.0">
+                     <padding>
+                        <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+                     </padding>
+                  </TextField>
+                  <FlowPane focusTraversable="true" hgap="3.0" vgap="2.0">
+                     <children>
+                        <Label fx:id="labelOrder" alignment="CENTER_RIGHT" contentDisplay="RIGHT" minHeight="-Infinity" minWidth="-Infinity" prefHeight="32.0" prefWidth="48.0" textAlignment="RIGHT" />
+                        <ToggleButton fx:id="buttonBookMark" contentDisplay="CENTER" mnemonicParsing="false" onAction="#pressedButtonBookMark" prefHeight="25.0" prefWidth="73.0" text="Bookmark" />
+                        <Label fx:id="labelDate" alignment="CENTER" contentDisplay="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="32.0" prefWidth="77.0" textAlignment="JUSTIFY" />
+                        <ComboBox fx:id="comboStar" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="32.0" prefWidth="67.0" promptText="Star" />
+                        <TextField fx:id="textFieldKeyWord" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="32.0" prefWidth="183.0" promptText="Keywords" />
+                        <TextField fx:id="textFieldTitle" layoutX="212.0" layoutY="10.0" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="32.0" prefWidth="396.0" promptText="Title" />
+                        <TextField fx:id="textFieldWebAddress" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="32.0" prefWidth="732.0" promptText="Web address" />
+                        <Button fx:id="buttonSave" minWidth="-Infinity" mnemonicParsing="false" onAction="#pressedButtonSave" prefHeight="31.0" prefWidth="48.0" text="Save" />
+                        <Button fx:id="buttonOpenBrowser" mnemonicParsing="false" onAction="#pressedButtonOpenBrowser" text="Open in browser" />
+                        <Button fx:id="buttonDelete" mnemonicParsing="false" onAction="#pressedButtonDelete" text="Delete" />
+                        <Button fx:id="buttonAdd" mnemonicParsing="false" prefHeight="15.0" prefWidth="53.0" text="Add" />
+                     </children>
+                  </FlowPane>
+               </children>
+            </VBox>
             <Separator layoutX="13.0" layoutY="105.0" minHeight="-Infinity" prefHeight="2.0" prefWidth="1215.0" style="-fx-background-color: black;">
                <padding>
                   <Insets top="5.0" />
@@ -94,7 +106,8 @@
                   <TableView fx:id="tableViewWebPages" prefHeight="298.0" prefWidth="949.0">
                      <columns>
                         <TableColumn fx:id="tableColumnNr" prefWidth="47.6000337600708" style="-fx-alignment:: RIGHT;" text="Nr" />
-                        <TableColumn fx:id="tableColumnDate" prefWidth="77.19999313354492" text="Date" />
+                        <TableColumn fx:id="tableColumnBookMk" prefWidth="51.60000991821289" style="-fx-alignment:: RIGHT;" text="B.mark" />
+                        <TableColumn fx:id="tableColumnDate" prefWidth="74.00000762939453" text="Date" />
                         <TableColumn fx:id="tableColumnStar" prefWidth="50.4000244140625" text="Star" />
                         <TableColumn fx:id="tableColumnKeyWord" prefWidth="208.00001525878906" text="Keyword" />
                         <TableColumn fx:id="tableColumnTitle" prefWidth="437.6000061035156" text="Title" />

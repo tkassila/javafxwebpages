@@ -1,8 +1,5 @@
 package com.metait.javafxwebpages.datarow;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class JSONWebAddress {
     public int getiOrder() {
         return iOrder;
@@ -10,6 +7,14 @@ public class JSONWebAddress {
 
     public void setiOrder(int iOrder) {
         this.iOrder = iOrder;
+    }
+
+    public int getiBookMark() {
+        return iBookMark;
+    }
+
+    public void setiBookMark(int iBookMark) {
+        this.iBookMark = iBookMark;
     }
 
     public String getStrDAte() {
@@ -53,6 +58,7 @@ public class JSONWebAddress {
     }
 
     private int iOrder = 0;
+    private int iBookMark = 0;
     private String strDAte = "";
     private String strKeywore = "";
     private String strStar = "";
@@ -66,6 +72,7 @@ public class JSONWebAddress {
             strStar = item.getStar();
             strWebAddress = item.getWebaddress();
             strTitle = item.getTitle();
+            iBookMark = item.getBookmark();
         }
 
         public String toString() {

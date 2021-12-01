@@ -25,7 +25,7 @@ public class WebPagesApplication extends Application {
                 controller.handleKeyEvent(event);
             }
         });
-        stage.setTitle("List arkeved webpages of web browsers");
+        stage.setTitle("List saved webpages of web browsers");
         stage.setScene(scene);
         stage.show();
     }
