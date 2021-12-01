@@ -12,13 +12,17 @@ import java.io.IOException;
 import com.metait.javafxwebpages.WebPagesController;
 
 public class WebPagesApplication extends Application {
+    private Stage m_primaryStage;
+
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(WebPagesApplication.class.getResource("webpages-view.fxml"));
         WebPagesController controller = new WebPagesController();
+        m_primaryStage = stage;
+        controller.setPrimaryStage(m_primaryStage);
         fxmlLoader.setController(controller);
         Parent loadedroot = fxmlLoader.load();
-        Scene scene = new Scene(loadedroot, 957, 714);
+        Scene scene = new Scene(loadedroot, 1000, 714);
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {

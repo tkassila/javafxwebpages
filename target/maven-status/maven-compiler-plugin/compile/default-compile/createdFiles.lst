@@ -7,12 +7,10 @@ com\metait\javafxwebpages\WebPagesController$8.class
 com\metait\javafxwebpages\WebPagesController$4.class
 com\metait\javafxwebpages\WebPagesController$14.class
 com\metait\javafxwebpages\WebPagesController$9.class
-com\metait\javafxwebpages\datarow\WebAddressRow.class
 module-info.class
 com\metait\javafxwebpages\datarow\JSONWebAddress.class
 com\metait\javafxwebpages\WebPagesController$3.class
 com\metait\javafxwebpages\WebPagesController$12.class
-com\metait\javafxwebpages\datarow\WebAddressDataRowCell.class
 com\metait\javafxwebpages\datarow\WebAddresItem.class
 com\metait\javafxwebpages\WebPagesController$10.class
 com\metait\javafxwebpages\WebPagesController$COLUMNHEADERS.class

@@ -38,10 +38,11 @@ import java.nio.file.Path;
 
 import com.google.gson.Gson;
 
-import com.metait.javafxwebpages.datarow.WebAddressRow;
 import com.metait.javafxwebpages.datarow.WebAddresItem;
 import com.metait.javafxwebpages.datarow.JSONWebAddress;
 import com.metait.javafxwebpages.url.Url2String;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class WebPagesController {
     @FXML
@@ -122,7 +123,8 @@ public class WebPagesController {
     private RadioButton radioButtonBookMark;
     @FXML
     private TextField textFieldShow;
-
+    @FXML
+    private CheckBox checkBoxInCaseSearch;
     /*
     @FXML
     private Label headerNumbere;
@@ -151,8 +153,10 @@ public class WebPagesController {
     private String strSearch;
     private static String java_user_home = System.getProperty("user.home");
     public static final String cnstUserDirOfApp = ".javawebaddressfx";
+    private Stage primaryStage;
+    private JsonConfig jsonConfig;
     //  private  KeyCombination pasteKeyCombination = new KeyCodeCombination(KeyCode.V,KeyCombination.CONTROL_DOWN);
-
+    private boolean bSearchWithLowerCaseStrings = false;
     private EventHandler<KeyEvent> keyEventHanler = null;
 
     private ChangeListener<Boolean> focuslistener = new ChangeListener<Boolean>() {
@@ -206,6 +210,14 @@ public class WebPagesController {
     }
 
     @FXML
+    protected void pressedCheckBoxInCaseSearch()
+    {
+        if (checkBoxInCaseSearch.isSelected())
+            bSearchWithLowerCaseStrings = true;
+        else
+            bSearchWithLowerCaseStrings = false;
+    }
+    @FXML
     protected void pressedButtonGlobalSearch()
     {
         if (textFieldSearch.getText().trim().length()==0)
@@ -219,10 +231,16 @@ public class WebPagesController {
         // System.out.println("pressedButtonGlobalSearch");
         // to filter
         final String strSearch = textFieldSearch.getText();
+        final boolean bToLowerCaseLetters = bSearchWithLowerCaseStrings;
         FilteredList<WebAddresItem> listFiltered = webAddressRows.filtered(
                 new Predicate<WebAddresItem>(){
                     public boolean test(WebAddresItem t){
-                        return t.toString().contains(strSearch);
+                        String strValue = t.toString();
+                        if (strValue == null)
+                            return false;
+                        if (bToLowerCaseLetters)
+                            strValue = strValue.toLowerCase();
+                        return strValue.contains(strSearch);
                     }
                 });
         tableViewWebPages.setItems(listFiltered);
@@ -266,6 +284,7 @@ public class WebPagesController {
 
         buttonListAll.setSelected(false);
 
+        final boolean bToLowerCaseLetters = bSearchWithLowerCaseStrings;
         final String strSearch = textFieldSearch.getText();
         columnName = COLUMNHEADERS.cnstWebAddress;
         if (radioButtonNr.isSelected()) {
@@ -283,7 +302,12 @@ public class WebPagesController {
             listFiltered = webAddressRows.filtered(
                     new Predicate<WebAddresItem>(){
                         public boolean test(WebAddresItem t){
-                            return t.getTitle().contains(strSearch);
+                            String strValue = t.getTitle();
+                            if (strValue == null)
+                                return false;
+                            if (bToLowerCaseLetters)
+                                strValue = strValue.toLowerCase();
+                            return strValue.contains(strSearch);
                         }
                     });
         }
@@ -305,7 +329,12 @@ public class WebPagesController {
             listFiltered = webAddressRows.filtered(
                     new Predicate<WebAddresItem>(){
                         public boolean test(WebAddresItem t){
-                            return t.getWebaddress() != null && t.getWebaddress().contains(strSearch);
+                            String strValue = t.getWebaddress();
+                            if (strValue == null)
+                                return false;
+                            if (bToLowerCaseLetters)
+                                strValue = strValue.toLowerCase();
+                            return strValue.contains(strSearch);
                         }
                     });
         }
@@ -315,7 +344,12 @@ public class WebPagesController {
             listFiltered = webAddressRows.filtered(
                     new Predicate<WebAddresItem>(){
                         public boolean test(WebAddresItem t){
-                            return t.getDate() != null && t.getDate().contains(strSearch);
+                            String strValue = t.getDate();
+                            if (strValue == null)
+                                return false;
+                            if (bToLowerCaseLetters)
+                                strValue = strValue.toLowerCase();
+                            return strValue.contains(strSearch);
                         }
                     });
         }
@@ -325,7 +359,12 @@ public class WebPagesController {
             listFiltered = webAddressRows.filtered(
                     new Predicate<WebAddresItem>(){
                         public boolean test(WebAddresItem t){
-                            return t.getKeyword() != null && t.getKeyword().contains(strSearch);
+                            String strValue = t.getKeyword();
+                            if (strValue == null)
+                                return false;
+                            if (bToLowerCaseLetters)
+                                strValue = strValue.toLowerCase();
+                            return strValue.contains(strSearch);
                         }
                     });
         }
@@ -383,6 +422,70 @@ public class WebPagesController {
             }
         }
         return ret;
+    }
+
+    public void setPrimaryStage(Stage stage)
+    {
+        primaryStage = stage;
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent t) {
+                appIsClosing();
+                Platform.exit();
+                System.exit(0);
+            }
+        });
+    }
+
+    private void appIsClosing()
+    {
+        // TODO:
+        System.out.println("loppu");
+        WebAddresItem item = tableViewWebPages.getSelectionModel().getSelectedItem();
+        saveSelectedItemPosition(item);
+    }
+
+    private File getSelectedWebAddressFile()
+    {
+        File appDir = getAppDir();
+        if (appDir == null)
+            return null;
+        File selectedFile = new File(appDir +File.separator +"selectedwebaddress.json");
+        return selectedFile;
+    }
+
+    private void saveSelectedItemPosition(WebAddresItem item)
+    {
+        File selectedwebaddressFiler = getSelectedWebAddressFile();
+        if (selectedwebaddressFiler == null)
+            return;
+        Writer writer = null;
+        try {
+            Path path = Paths.get(selectedwebaddressFiler.getAbsolutePath());
+            StandardOpenOption writeOption = StandardOpenOption.TRUNCATE_EXISTING;
+            if (!selectedwebaddressFiler.exists())
+                writeOption = StandardOpenOption.CREATE;
+            writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8, writeOption);
+            Gson gson = new Gson();
+            List<JSONWebAddress> jsonList = new ArrayList<>();
+            if (jsonConfig == null)
+                jsonConfig = new JsonConfig();
+            if (item != null)
+                jsonConfig.setLastOrderNumber(item.getOrder());
+            gson.toJson(jsonConfig, writer);
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+            labelMsg.setText("Write file " + selectedwebaddressFiler.getAbsolutePath() + " error: " + ioe.getMessage());
+        } finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException ioe2) {
+                    ioe2.printStackTrace();
+                    labelMsg.setText("Closing file " + selectedwebaddressFiler.getAbsolutePath() + " error: " + ioe2.getMessage());
+                }
+            }
+        }
     }
 
     @FXML
@@ -512,8 +615,10 @@ public class WebPagesController {
                 Clipboard cb = Clipboard.getSystemClipboard();
                 boolean success = false;
                 if (cb.hasString()) {
+                    /*
                     System.out.println("Dropped: " +cb.getString());
                     System.out.println("target: " + event.getTarget().toString());
+                     */
                     handlePossibleUrl(cb.getString());
                     success = true;
                 }
@@ -557,6 +662,7 @@ public class WebPagesController {
         tableViewWebPages.setItems(webAddressRows);
         initGridPane();
         readWebAddressListFromFile();
+        readJsonConfigFile();
     }
 
     private void loadWebPageIntoWebView(WebAddresItem item)
@@ -634,18 +740,6 @@ public class WebPagesController {
         SimpleDateFormat formatter= new SimpleDateFormat("dd-MM-yyyy");
         Date date = new Date(System.currentTimeMillis());
         return formatter.format(date);
-    }
-
-    private void addGridPaneRow(WebAddressRow row)
-    {
-        // webAddressRows.add(row);
-        /*
-        gridPaneWebPages.add(row.getOrderNumber(), 0, iStartRow); // column=1 row=0
-        gridPaneWebPages.add(row.getDate(), 1, iStartRow);
-        gridPaneWebPages.add(row.getStars(), 2, iStartRow);
-        gridPaneWebPages.add(row.getKeyrords(), 3, iStartRow);
-        gridPaneWebPages.add(row.getWebadress(), 4, iStartRow); // column=1 row=0
-         */
     }
 
     @FXML
@@ -915,9 +1009,8 @@ public class WebPagesController {
         return ret;
     }
 
-    private File getJsonRowFile()
+    private File getAppDir()
     {
-        File rowFile = null;
         String userHome = java_user_home;
         File userDir = new File(userHome);
         if (!userDir.exists())
@@ -929,8 +1022,79 @@ public class WebPagesController {
                 labelMsg.setText("Cannot create dir: " +appDir.getAbsolutePath());
                 return null;
             }
+        return appDir;
+    }
+
+    private File getJsonRowFile()
+    {
+        File rowFile = null;
+        File appDir = getAppDir();
+        if (appDir == null)
+            return null;
         rowFile = new File(appDir +File.separator +"webaddressrows.json");
         return rowFile;
+    }
+
+    private void readJsonConfigFile()
+    {
+        File selectedwebaddressFiler = getSelectedWebAddressFile();
+        if (selectedwebaddressFiler == null)
+            return;
+        if (!selectedwebaddressFiler.exists())
+            return;
+        Reader reader = null;
+        try {
+            Path path = Paths.get(selectedwebaddressFiler.getAbsolutePath());
+            reader = Files.newBufferedReader(path, StandardCharsets.UTF_8);
+            Gson gson = new Gson();
+            jsonConfig = gson.fromJson(reader, JsonConfig.class);
+            if (jsonConfig.getLastOrderNumber() > -1 && webAddressRows != null
+                && webAddressRows.size()>0)
+            {
+                int iSelect = jsonConfig.getLastOrderNumber();
+                final WebAddresItem selectingItem;
+                for (WebAddresItem item : webAddressRows)
+                {
+                    if (item.getOrder() == iSelect) {
+                        selectingItem = item;
+                        Platform.runLater(new Runnable() {
+                            public void run() {
+                                tableViewWebPages.requestFocus();
+                                tableViewWebPages.getSelectionModel().select(selectingItem);
+                                int iSelected = tableViewWebPages.getSelectionModel().getFocusedIndex();
+                                if (iSelected != -1) {
+                                    tableViewWebPages.getFocusModel().focus(iSelected);
+                                    tableViewWebPages.scrollTo(iSelected);
+                                    /* under swing time:
+                                    int rowIndex = iSelected;
+                                    int columnIndex = 0;
+                                    boolean includeSpacing = true;
+                                    Rectangle cellRect = tableViewWebPages.getCellRect(rowIndex, columnIndex, includeSpacing);
+                                    tableViewWebPages.scrollRectToVisible(cellRect);
+                                     */
+                                }
+                            }
+                        });
+                        break;
+                    }
+                }
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+            labelMsg.setText("Read file " + selectedwebaddressFiler.getAbsolutePath() + " error: " + ioe.getMessage());
+        } catch (Exception norm_e) {
+            norm_e.printStackTrace();
+            labelMsg.setText("Read file " + selectedwebaddressFiler.getAbsolutePath() + " error: " + norm_e.getMessage());
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException ioe2) {
+                    ioe2.printStackTrace();
+                    labelMsg.setText("Closing file " + selectedwebaddressFiler.getAbsolutePath() + " error: " + ioe2.getMessage());
+                }
+            }
+        }
     }
 
     private void readWebAddressListFromFile()

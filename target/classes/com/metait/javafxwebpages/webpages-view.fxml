@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.RadioButton?>
@@ -33,6 +34,7 @@
             <HBox prefHeight="26.0" prefWidth="1211.0" spacing="2.0">
                <children>
                   <TextField fx:id="textFieldSearch" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="495.0" promptText="Search" HBox.hgrow="ALWAYS" />
+                  <Button fx:id="buttonHelp" disable="true" minWidth="-Infinity" mnemonicParsing="false" onAction="#pressedButtonHelp" prefHeight="25.0" prefWidth="52.0" text="Help" />
                </children>
                <padding>
                   <Insets bottom="3.0" />
@@ -52,10 +54,10 @@
                   <RadioButton fx:id="radioButtonTitle" layoutX="186.0" layoutY="10.0" minWidth="-Infinity" mnemonicParsing="false" prefHeight="17.0" prefWidth="55.0" text="Title" toggleGroup="$column_search" />
                   <RadioButton fx:id="radioButtonWebAddress" layoutX="394.0" layoutY="10.0" minWidth="-Infinity" mnemonicParsing="false" prefHeight="17.0" prefWidth="98.0" text="Web address" toggleGroup="$column_search" />
                   <RadioButton fx:id="radioButtonGlobal" layoutX="314.0" layoutY="15.0" minWidth="-Infinity" mnemonicParsing="false" prefHeight="17.0" prefWidth="98.0" selected="true" text="Global search" toggleGroup="$column_search" />
+                  <CheckBox fx:id="checkBoxInCaseSearch" mnemonicParsing="false" onAction="#pressedCheckBoxInCaseSearch" text="In case search" />
                   <Button fx:id="buttonGlobalSearch" mnemonicParsing="false" onAction="#pressedButtonGlobalSearch" text="Search globally" />
                   <Button fx:id="buttonSearch" mnemonicParsing="false" onAction="#pressedButtonSearch" text="Column search" />
                   <ToggleButton fx:id="buttonListAll" mnemonicParsing="false" onAction="#pressedButtonListAll" text="List All" />
-                  <Button fx:id="buttonHelp" minWidth="-Infinity" mnemonicParsing="false" onAction="#pressedButtonHelp" prefHeight="25.0" prefWidth="52.0" text="Help" />
                </children>
                <padding>
                   <Insets top="5.0" />
