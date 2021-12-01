@@ -2,7 +2,7 @@
 
 Many users will hold open web pages on the browser long time and to hold they in the mind also. There has been same kind of
 web application on some server earlier. A next application has same kind of meaning. Copy a web address in a browser and 
-paste (cntl+v) it into this application, still focus before it on table to be sure. And the application is adding web address on the list.
+paste (cntl+v) it into this application, still focus before on table to be sure. And the application is adding web address on the list.
 
 This is a JavaFx application for get pasted web adress into the list and a user home file. Before it, the app is reading keywords
  and title to store in the row. You can management all data rows above the list. It is checking, that same web address 
