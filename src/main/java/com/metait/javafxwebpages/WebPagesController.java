@@ -158,6 +158,9 @@ public class WebPagesController {
     //  private  KeyCombination pasteKeyCombination = new KeyCodeCombination(KeyCode.V,KeyCombination.CONTROL_DOWN);
     private boolean bSearchWithLowerCaseStrings = false;
     private EventHandler<KeyEvent> keyEventHanler = null;
+    private String strWebViewDocTitle = null;
+    private String strWebViewDocKeyWord = null;
+    private WebAddresItem jusAddedWebAddresItem = null;
 
     private ChangeListener<Boolean> focuslistener = new ChangeListener<Boolean>() {
         @Override
@@ -287,7 +290,7 @@ public class WebPagesController {
         */
 
         buttonListAll.setSelected(false);
-        
+
         final boolean bToLowerCaseLetters = bSearchWithLowerCaseStrings;
         String strAtFirstSearch = textFieldSearch.getText();
         if (bToLowerCaseLetters && strAtFirstSearch != null)
@@ -499,6 +502,9 @@ public class WebPagesController {
     @FXML
     public void initialize() {
 
+        WebEngine webEngine = webView.getEngine();
+        webEngine.getLoadWorker().stateProperty().addListener(new WebPageLoadListener(webView, this));
+
         buttonListAll.setSelected(true);
 
         textFieldWebAddress.focusedProperty().addListener(focuslistener);
@@ -682,6 +688,7 @@ public class WebPagesController {
         Platform.runLater(new Runnable() {
             public void run() {
                 try {
+                    jusAddedWebAddresItem = item;
                     engine.load(webAddress);
                 }catch (Exception e){
                     labelMsg.setText("Error: " +e.getMessage());
@@ -857,6 +864,10 @@ public class WebPagesController {
             File f = new File("C:\\Java\\project\\javafx\\javafxplayer\\src\\main\\resources\\com\\metait\\javafxplayer\\help\\help.html");
             if (f.exists())
              */
+            WebAddresItem item = new WebAddresItem(iOrder, iStars, getTodayString(), itemKWord, fromClibBoard, title, 0);
+            jusAddedWebAddresItem = item;
+            webAddressRows.add(item);
+
             Platform.runLater(new Runnable() {
                 public void run() {
                     try {
@@ -870,6 +881,8 @@ public class WebPagesController {
                     }
                 }
             });
+
+            /*
             Url2String url2String = new Url2String();
             // webEngine.loadContent(strWebPage);
             URL url = null;
@@ -902,13 +915,31 @@ public class WebPagesController {
             }
             itemKWord = getKeyWordsFromWebPage(strWebPage);
             title = getTitleFromWebPage(strWebPage);
+             */
         }catch (Exception e){
             e.printStackTrace();
             labelMsg.setText("Error: " +e.getMessage());
         }
+        /*
         WebAddresItem item = new WebAddresItem(iOrder, iStars, getTodayString(), itemKWord, fromClibBoard, title, 0);
+        jusAddedWebAddresItem = item;
         webAddressRows.add(item);
-        saveWebAddressItems();
+        */
+    }
+
+    public void calledWhenWebViewDocLoaded(String title, String keyword)
+    {
+        strWebViewDocTitle = title;
+        strWebViewDocKeyWord = keyword;
+        if (jusAddedWebAddresItem != null) {
+            if (!(jusAddedWebAddresItem.getTitle() != null
+                && title == null))
+            jusAddedWebAddresItem.setTitle(strWebViewDocTitle);
+            if (!(jusAddedWebAddresItem.getKeyword() != null
+                    && keyword == null))
+            jusAddedWebAddresItem.setKeyword(keyword);
+            saveWebAddressItems();
+        }
     }
 
     private String getTitleFromWebPage(String strWebPage)

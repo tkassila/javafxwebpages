@@ -6,6 +6,7 @@ module com.metait.javafxwebpages {
     requires java.desktop;
     requires com.google.gson;
     requires com.ibm.icu;
+    requires jdk.xml.dom;
 
     opens com.metait.javafxwebpages to javafx.fxml;
 //    opens com.metait.javafxwebpages.datarow to javafx.fxml;

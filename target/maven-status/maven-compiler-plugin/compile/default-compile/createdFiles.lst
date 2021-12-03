@@ -3,7 +3,9 @@ com\metait\javafxwebpages\WebPagesApplication.class
 com\metait\javafxwebpages\WebPagesController$6.class
 com\metait\javafxwebpages\WebPagesController$1.class
 com\metait\javafxwebpages\WebPagesController$11.class
+com\metait\javafxwebpages\WebPagesController$18.class
 com\metait\javafxwebpages\WebPagesController$8.class
+com\metait\javafxwebpages\JsonConfig.class
 com\metait\javafxwebpages\WebPagesController$4.class
 com\metait\javafxwebpages\WebPagesController$14.class
 com\metait\javafxwebpages\WebPagesController$9.class
@@ -15,10 +17,14 @@ com\metait\javafxwebpages\datarow\WebAddresItem.class
 com\metait\javafxwebpages\WebPagesController$10.class
 com\metait\javafxwebpages\WebPagesController$COLUMNHEADERS.class
 com\metait\javafxwebpages\WebPagesController$7.class
+com\metait\javafxwebpages\WebPagesController$17.class
 com\metait\javafxwebpages\WebPagesController$15.class
+com\metait\javafxwebpages\WebPageLoadListener.class
 com\metait\javafxwebpages\WebPagesController$5.class
 com\metait\javafxwebpages\WebPagesApplication$1.class
+com\metait\javafxwebpages\WebPagesController$19.class
 com\metait\javafxwebpages\WebPagesController.class
 com\metait\javafxwebpages\WebPagesController$13.class
 com\metait\javafxwebpages\url\Url2String.class
+com\metait\javafxwebpages\WebPagesController$16.class
 com\metait\javafxwebpages\WebPagesController$2.class
