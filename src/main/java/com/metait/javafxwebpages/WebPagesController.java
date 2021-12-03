@@ -1,5 +1,6 @@
 package com.metait.javafxwebpages;
 
+import javafx.scene.control.Alert;
 import javafx.collections.transformation.FilteredList;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -18,6 +19,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.web.WebView;
 import javafx.scene.web.WebEngine;
 
+import java.util.Optional;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.StandardOpenOption;
@@ -207,9 +209,23 @@ public class WebPagesController {
     public void pressedButtonDelete() {
        // System.out.println("pressedButtonDelete");
         WebAddresItem webAddresItem = tableViewWebPages.getSelectionModel().getSelectedItem();
+
+        ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelType = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+        Alert alert = new Alert(Alert.AlertType.WARNING,
+                "" +(webAddresItem.getTitle() != null ? webAddresItem.getTitle() :
+                        webAddresItem.getWebaddress()) +"\n" +
+                "Should this row will be deleted?", okButtonType, cancelType);
+        alert.setTitle("Delete row");
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.setStyle("-fx-font-weight: bold");
+        Optional<ButtonType> result = alert.showAndWait();
+
         if (webAddresItem != null)
+        if (result.orElse(cancelType) == okButtonType) {
             webAddressRows.remove(webAddresItem);
-        saveWebAddressItems();
+            saveWebAddressItems();
+        }
     }
 
     @FXML
@@ -501,6 +517,10 @@ public class WebPagesController {
 
     @FXML
     public void initialize() {
+
+        Tooltip tableTip = new Tooltip("Double click a row to show the page below web view component");
+        tableTip.setStyle("-fx-font-weight: bold; -fx-text-fill: yellow; -fx-font-size: 14");
+        tableViewWebPages.setTooltip(tableTip);
 
         WebEngine webEngine = webView.getEngine();
         webEngine.getLoadWorker().stateProperty().addListener(new WebPageLoadListener(webView, this));

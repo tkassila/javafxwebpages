@@ -55,9 +55,9 @@
                   <RadioButton fx:id="radioButtonWebAddress" layoutX="394.0" layoutY="10.0" minWidth="-Infinity" mnemonicParsing="false" prefHeight="17.0" prefWidth="98.0" text="Web address" toggleGroup="$column_search" />
                   <RadioButton fx:id="radioButtonGlobal" layoutX="314.0" layoutY="15.0" minWidth="-Infinity" mnemonicParsing="false" prefHeight="17.0" prefWidth="98.0" selected="true" text="Global search" toggleGroup="$column_search" />
                   <CheckBox fx:id="checkBoxInCaseSearch" mnemonicParsing="false" onAction="#pressedCheckBoxInCaseSearch" text="In case search" />
-                  <Button fx:id="buttonGlobalSearch" mnemonicParsing="false" onAction="#pressedButtonGlobalSearch" text="Search globally" />
-                  <Button fx:id="buttonSearch" mnemonicParsing="false" onAction="#pressedButtonSearch" text="Column search" />
-                  <ToggleButton fx:id="buttonListAll" mnemonicParsing="false" onAction="#pressedButtonListAll" text="List All" />
+                  <Button fx:id="buttonGlobalSearch" mnemonicParsing="false" onAction="#pressedButtonGlobalSearch" style="-fx-font-weight: bold;" text="Search globally" />
+                  <Button fx:id="buttonSearch" mnemonicParsing="false" onAction="#pressedButtonSearch" style="-fx-font-weight: bold;" text="Column search" />
+                  <ToggleButton fx:id="buttonListAll" mnemonicParsing="false" onAction="#pressedButtonListAll" style="-fx-font-weight: bold;" text="List All" />
                </children>
                <padding>
                   <Insets top="5.0" />
@@ -90,10 +90,10 @@
                         <TextField fx:id="textFieldKeyWord" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="32.0" prefWidth="183.0" promptText="Keywords" />
                         <TextField fx:id="textFieldTitle" layoutX="212.0" layoutY="10.0" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="32.0" prefWidth="396.0" promptText="Title" />
                         <TextField fx:id="textFieldWebAddress" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="32.0" prefWidth="732.0" promptText="Web address" />
-                        <Button fx:id="buttonSave" minWidth="-Infinity" mnemonicParsing="false" onAction="#pressedButtonSave" prefHeight="31.0" prefWidth="48.0" text="Save" />
-                        <Button fx:id="buttonOpenBrowser" mnemonicParsing="false" onAction="#pressedButtonOpenBrowser" text="Open in browser" />
-                        <Button fx:id="buttonDelete" mnemonicParsing="false" onAction="#pressedButtonDelete" text="Delete" />
-                        <Button fx:id="buttonAdd" mnemonicParsing="false" prefHeight="15.0" prefWidth="53.0" text="Add" />
+                        <Button fx:id="buttonSave" minWidth="-Infinity" mnemonicParsing="false" onAction="#pressedButtonSave" prefHeight="31.0" prefWidth="48.0" style="-fx-font-weight: bold;" text="Save" />
+                        <Button fx:id="buttonOpenBrowser" mnemonicParsing="false" onAction="#pressedButtonOpenBrowser" style="-fx-font-weight: bold;" text="Open in browser" />
+                        <Button fx:id="buttonDelete" mnemonicParsing="false" onAction="#pressedButtonDelete" style="-fx-font-weight: bold;" text="Delete" />
+                        <Button fx:id="buttonAdd" mnemonicParsing="false" prefHeight="15.0" prefWidth="53.0" style="-fx-font-weight: bold;" text="Add" />
                      </children>
                   </FlowPane>
                </children>
