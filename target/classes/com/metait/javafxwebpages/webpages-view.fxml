@@ -48,13 +48,13 @@
                      </toggleGroup>
                   </RadioButton>
                   <RadioButton fx:id="radioButtonBookMark" layoutX="10.0" layoutY="15.0" minWidth="-Infinity" mnemonicParsing="false" prefHeight="17.0" prefWidth="81.0" text="Bookmark" toggleGroup="$column_search" />
-                  <RadioButton fx:id="radioButtonDate" layoutX="10.0" layoutY="10.0" minWidth="-Infinity" mnemonicParsing="false" prefHeight="17.0" prefWidth="58.0" text="Date" toggleGroup="$column_search" />
-                  <RadioButton fx:id="radioButtonStar" layoutX="58.0" layoutY="10.0" minWidth="-Infinity" mnemonicParsing="false" prefHeight="17.0" prefWidth="51.0" text="Star" toggleGroup="$column_search" />
-                  <RadioButton fx:id="radioButtonKeyWord" layoutX="136.0" layoutY="10.0" minWidth="-Infinity" mnemonicParsing="false" prefHeight="17.0" prefWidth="76.0" text="Keyword" toggleGroup="$column_search" />
-                  <RadioButton fx:id="radioButtonTitle" layoutX="186.0" layoutY="10.0" minWidth="-Infinity" mnemonicParsing="false" prefHeight="17.0" prefWidth="55.0" text="Title" toggleGroup="$column_search" />
-                  <RadioButton fx:id="radioButtonWebAddress" layoutX="394.0" layoutY="10.0" minWidth="-Infinity" mnemonicParsing="false" prefHeight="17.0" prefWidth="98.0" text="Web address" toggleGroup="$column_search" />
-                  <RadioButton fx:id="radioButtonGlobal" layoutX="314.0" layoutY="15.0" minWidth="-Infinity" mnemonicParsing="false" prefHeight="17.0" prefWidth="98.0" selected="true" text="Global search" toggleGroup="$column_search" />
-                  <CheckBox fx:id="checkBoxInCaseSearch" mnemonicParsing="false" onAction="#pressedCheckBoxInCaseSearch" text="In case search" />
+                  <RadioButton fx:id="radioButtonDate" layoutX="10.0" layoutY="10.0" minWidth="-Infinity" mnemonicParsing="false" prefHeight="17.0" prefWidth="58.0" style="-fx-font-weight: bold;" text="Date" toggleGroup="$column_search" />
+                  <RadioButton fx:id="radioButtonStar" layoutX="58.0" layoutY="10.0" minWidth="-Infinity" mnemonicParsing="false" prefHeight="17.0" prefWidth="51.0" style="-fx-font-weight: bold;" text="Star" toggleGroup="$column_search" />
+                  <RadioButton fx:id="radioButtonKeyWord" layoutX="136.0" layoutY="10.0" minWidth="-Infinity" mnemonicParsing="false" prefHeight="17.0" prefWidth="76.0" style="-fx-font-weight: bold;" text="Keyword" toggleGroup="$column_search" />
+                  <RadioButton fx:id="radioButtonTitle" layoutX="186.0" layoutY="10.0" minWidth="-Infinity" mnemonicParsing="false" prefHeight="17.0" prefWidth="55.0" style="-fx-font-weight: bold;" text="Title" toggleGroup="$column_search" />
+                  <RadioButton fx:id="radioButtonWebAddress" layoutX="394.0" layoutY="10.0" minWidth="-Infinity" mnemonicParsing="false" prefHeight="17.0" prefWidth="98.0" style="-fx-font-weight: bold;" text="Web address" toggleGroup="$column_search" />
+                  <RadioButton fx:id="radioButtonGlobal" layoutX="314.0" layoutY="15.0" minWidth="-Infinity" mnemonicParsing="false" prefHeight="17.0" prefWidth="98.0" selected="true" style="-fx-font-weight: bold;" text="Global search" toggleGroup="$column_search" />
+                  <CheckBox fx:id="checkBoxInCaseSearch" mnemonicParsing="false" onAction="#pressedCheckBoxInCaseSearch" style="-fx-font-weight: bold;" text="Incase search" />
                   <Button fx:id="buttonGlobalSearch" mnemonicParsing="false" onAction="#pressedButtonGlobalSearch" style="-fx-font-weight: bold;" text="Search globally" />
                   <Button fx:id="buttonSearch" mnemonicParsing="false" onAction="#pressedButtonSearch" style="-fx-font-weight: bold;" text="Column search" />
                   <ToggleButton fx:id="buttonListAll" mnemonicParsing="false" onAction="#pressedButtonListAll" style="-fx-font-weight: bold;" text="List All" />
