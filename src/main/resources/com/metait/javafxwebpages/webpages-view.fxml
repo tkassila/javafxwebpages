@@ -81,7 +81,7 @@
                         <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
                      </padding>
                   </TextField>
-                  <FlowPane focusTraversable="true" hgap="3.0" vgap="2.0">
+                  <FlowPane fx:id="flowPaneEdit" focusTraversable="true" hgap="3.0" vgap="2.0">
                      <children>
                         <Label fx:id="labelOrder" alignment="CENTER_RIGHT" contentDisplay="RIGHT" minHeight="-Infinity" minWidth="-Infinity" prefHeight="32.0" prefWidth="48.0" textAlignment="RIGHT" />
                         <ToggleButton fx:id="buttonBookMark" contentDisplay="CENTER" mnemonicParsing="false" onAction="#pressedButtonBookMark" prefHeight="25.0" prefWidth="73.0" text="Bookmark" />

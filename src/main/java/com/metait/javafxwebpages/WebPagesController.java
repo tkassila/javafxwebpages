@@ -11,6 +11,7 @@ import javafx.scene.input.*;
 import javafx.event.EventHandler;
 import javafx.scene.input.DragEvent;
 import javafx.scene.control.Control;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.collections.ObservableList;
@@ -44,6 +45,7 @@ import com.metait.javafxwebpages.datarow.WebAddresItem;
 import com.metait.javafxwebpages.datarow.JSONWebAddress;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Duration;
 
 /**
  * This class is the main controller of the application.
@@ -132,6 +134,8 @@ public class WebPagesController {
     private CheckBox checkBoxInCaseSearch;
     @FXML
     private Button buttonNewRow;
+    @FXML
+    private FlowPane flowPaneEdit;
     /*
     @FXML
     private Label headerNumbere;
@@ -530,8 +534,10 @@ public class WebPagesController {
         buttonDelete.setDisable(true);
         buttonAdd.setDisable(true);
 
-        Tooltip tableTip = new Tooltip("Double click a row to show the page below web view component");
+        Tooltip tableTip = new Tooltip(
+                "Paste web address into table or\nDouble click a table row to show the page below web component");
         tableTip.setStyle("-fx-font-weight: bold; -fx-text-fill: yellow; -fx-font-size: 14");
+        tableTip.setShowDelay(Duration.seconds(4));
         tableViewWebPages.setTooltip(tableTip);
 
         WebEngine webEngine = webView.getEngine();
