@@ -2,6 +2,9 @@ package com.metait.javafxwebpages.testjava;
 
 import java.lang.Runtime;
 
+/**
+ * This is for "test" fun class.
+ */
 public class MainTest {
     public static void main(String args[]){
             System.out.println("processors=" +Runtime.getRuntime().availableProcessors());

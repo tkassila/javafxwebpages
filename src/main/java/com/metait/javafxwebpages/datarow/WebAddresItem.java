@@ -5,6 +5,10 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
+/**
+ * This class instancies constains a data row of user table. The class values are
+ * set in GUI or by the app, when loading data from/to a file, by JSONWebAddress class.
+ */
 public class WebAddresItem {
     public WebAddresItem(JSONWebAddress jsontitem)
     {

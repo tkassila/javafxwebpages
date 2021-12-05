@@ -1,3 +1,6 @@
+/**
+ * The web address application: module-info.java
+ */
 module com.metait.javafxwebpages {
     requires javafx.controls;
     requires javafx.fxml;

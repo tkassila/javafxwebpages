@@ -1,5 +1,8 @@
 package com.metait.javafxwebpages.datarow;
 
+/**
+ * This class is for storing web address item into a file by google jar.
+ */
 public class JSONWebAddress {
     public int getiOrder() {
         return iOrder;

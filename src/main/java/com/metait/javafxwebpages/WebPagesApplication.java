@@ -11,6 +11,11 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import com.metait.javafxwebpages.WebPagesController;
 
+/**
+ * This javaFx application gets web address from clibboard and is storing those address, keywords
+ * and title into a application files. You can also reopen in webview component or in default browser
+ * etc.
+ */
 public class WebPagesApplication extends Application {
     private Stage m_primaryStage;
 

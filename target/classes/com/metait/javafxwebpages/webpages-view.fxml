@@ -93,7 +93,8 @@
                         <Button fx:id="buttonSave" minWidth="-Infinity" mnemonicParsing="false" onAction="#pressedButtonSave" prefHeight="31.0" prefWidth="48.0" style="-fx-font-weight: bold;" text="Save" />
                         <Button fx:id="buttonOpenBrowser" mnemonicParsing="false" onAction="#pressedButtonOpenBrowser" style="-fx-font-weight: bold;" text="Open in browser" />
                         <Button fx:id="buttonDelete" mnemonicParsing="false" onAction="#pressedButtonDelete" style="-fx-font-weight: bold;" text="Delete" />
-                        <Button fx:id="buttonAdd" mnemonicParsing="false" prefHeight="15.0" prefWidth="53.0" style="-fx-font-weight: bold;" text="Add" />
+                        <Button fx:id="buttonAdd" mnemonicParsing="false" onAction="#pressedButtonAdd" prefHeight="15.0" prefWidth="53.0" style="-fx-font-weight: bold;" text="Add" />
+                        <Button fx:id="buttonNewRow" layoutX="965.0" layoutY="48.0" mnemonicParsing="false" onAction="#pressedButtonNewRow" prefHeight="25.0" prefWidth="78.0" style="-fx-font-weight: bold;" text="New row" />
                      </children>
                   </FlowPane>
                </children>

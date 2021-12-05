@@ -13,6 +13,10 @@ import java.nio.charset.Charset;
 import com.ibm.icu.text.CharsetDetector;
 import com.ibm.icu.text.CharsetMatch;
 
+/**
+ * This class for reading loaded web constent in the right characters.
+ * This is not used any more.
+ */
 public class Url2String {
 
     private String unknowCharacterSetName = null;

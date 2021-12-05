@@ -16,6 +16,9 @@ import org.w3c.dom.html.HTMLAnchorElement;
 // import java.awt.*;
 
 
+/**
+ * This class is listening for just loaded web document and extract some meta values (keywords and title).
+ */
 public class WebPageLoadListener implements ChangeListener<Worker.State>, EventListener
 {
     private static final String CLICK_EVENT = "click";
@@ -76,7 +79,6 @@ public class WebPageLoadListener implements ChangeListener<Worker.State>, EventL
                 strKeyword = strKeyword.replaceAll("\n"," ")
                         .replaceAll("\\s+"," ");
             m_webviewController.calledWhenWebViewDocLoaded(strTitle,  strKeyword);
-
         }
     }
 
@@ -107,8 +109,8 @@ public class WebPageLoadListener implements ChangeListener<Worker.State>, EventL
             // LOGGER.warn("OS does not support desktop operations like browsing. Cannot open link '{}'.", href);
         }
         */
-        event.preventDefault();
-    }
+    //   event.preventDefault();
+   }
 
     private void openLinkInSystemBrowser(String url)
     {

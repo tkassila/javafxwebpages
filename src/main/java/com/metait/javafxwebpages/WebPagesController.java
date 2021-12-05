@@ -42,10 +42,13 @@ import com.google.gson.Gson;
 
 import com.metait.javafxwebpages.datarow.WebAddresItem;
 import com.metait.javafxwebpages.datarow.JSONWebAddress;
-import com.metait.javafxwebpages.url.Url2String;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+/**
+ * This class is the main controller of the application.
+ * This is setting a user agent value for webview controller.
+ */
 public class WebPagesController {
     @FXML
     private TextField textFieldSearch;
@@ -127,6 +130,8 @@ public class WebPagesController {
     private TextField textFieldShow;
     @FXML
     private CheckBox checkBoxInCaseSearch;
+    @FXML
+    private Button buttonNewRow;
     /*
     @FXML
     private Label headerNumbere;
@@ -163,6 +168,8 @@ public class WebPagesController {
     private String strWebViewDocTitle = null;
     private String strWebViewDocKeyWord = null;
     private WebAddresItem jusAddedWebAddresItem = null;
+    private boolean bPressedButtonNewRow = false;
+    private String cnstUserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:94.0) Gecko/20100101 Firefox/94.0";
 
     private ChangeListener<Boolean> focuslistener = new ChangeListener<Boolean>() {
         @Override
@@ -518,6 +525,11 @@ public class WebPagesController {
     @FXML
     public void initialize() {
 
+        webView.setContextMenuEnabled(true);
+
+        buttonDelete.setDisable(true);
+        buttonAdd.setDisable(true);
+
         Tooltip tableTip = new Tooltip("Double click a row to show the page below web view component");
         tableTip.setStyle("-fx-font-weight: bold; -fx-text-fill: yellow; -fx-font-size: 14");
         tableViewWebPages.setTooltip(tableTip);
@@ -609,7 +621,7 @@ public class WebPagesController {
             public void handle(MouseEvent mouseEvent) {
                 if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
                     if(mouseEvent.getClickCount() == 2){
-                        System.out.println("Double clicked");
+                      // System.out.println("Double clicked");
                         WebAddresItem item = tableViewWebPages.getSelectionModel().getSelectedItem();
                         if (item != null)
                             loadWebPageIntoWebView(item);
@@ -709,7 +721,14 @@ public class WebPagesController {
             public void run() {
                 try {
                     jusAddedWebAddresItem = item;
-                    engine.load(webAddress);
+                    String modUrl = getCorrectedUlr(webAddress);
+                    if (modUrl != null) {
+                        if (!modUrl.equals(webAddress)) {
+                            item.setWebaddress(modUrl);
+                            saveWebAddressItems();
+                        }
+                        engine.load(modUrl);
+                    }
                 }catch (Exception e){
                     labelMsg.setText("Error: " +e.getMessage());
                     engine.load(null);
@@ -718,9 +737,27 @@ public class WebPagesController {
         });
     }
 
+    private String getCorrectedUlr(String webaddress)
+    {
+        String ret = webaddress;
+        if (ret != null && !ret.startsWith("http://")
+            && !ret.startsWith("https://") && !ret.startsWith("fps:")
+            && !ret.startsWith("fp:"))
+        {
+            ret = "http://" +ret;
+        }
+        return ret;
+    }
     private void editSelectedWebAddress(WebAddresItem newSelection)
     {
         textFieldShow.setText("");
+        bPressedButtonNewRow = false;
+
+        buttonDelete.setDisable(false);
+        buttonSave.setDisable(false);
+        buttonOpenBrowser.setDisable(false);
+
+        buttonNewRow.setDisable(false);
         labelDate.setText(""+newSelection.getDate());
         labelOrder.setText(""+newSelection.getOrder());
         textFieldKeyWord.setText(""+newSelection.getKeyword());
@@ -740,6 +777,7 @@ public class WebPagesController {
         textFieldTitle.setText(newSelection.getTitle());
         textFieldWebAddress.setText(""+newSelection.getWebaddress());
         buttonBookMark.setSelected(newSelection.getBookmark()!=0);
+        buttonDelete.setDisable(false);
     }
 
     private void initGridPane()
@@ -878,13 +916,15 @@ public class WebPagesController {
         try {
             WebEngine webEngine = webView.getEngine();
             webEngine.setJavaScriptEnabled(true);
-            webEngine.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Trident/7.0; rv:11.0) like Gecko");
+            // webEngine.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Trident/7.0; rv:11.0) like Gecko");
+            webEngine.setUserAgent(cnstUserAgent);
             // webEngine.load(fromClibBoard);
             /*
             File f = new File("C:\\Java\\project\\javafx\\javafxplayer\\src\\main\\resources\\com\\metait\\javafxplayer\\help\\help.html");
             if (f.exists())
              */
-            WebAddresItem item = new WebAddresItem(iOrder, iStars, getTodayString(), itemKWord, fromClibBoard, title, 0);
+            final String modUrl = getCorrectedUlr(fromClibBoard);
+            WebAddresItem item = new WebAddresItem(iOrder, iStars, getTodayString(), itemKWord, modUrl, title, 0);
             jusAddedWebAddresItem = item;
             webAddressRows.add(item);
 
@@ -893,7 +933,8 @@ public class WebPagesController {
                     try {
                         System.out.println("webengine->");
                         // webEngine.load(f.toURI().toString());
-                        webEngine.load(fromClibBoard);
+                        webEngine.setUserAgent(cnstUserAgent);
+                        webEngine.load(modUrl);
                     }catch (Exception e2){
                         System.out.println("webengine-> e2");
                         e2.printStackTrace();
@@ -1094,6 +1135,31 @@ public class WebPagesController {
         return rowFile;
     }
 
+    private void selectWebAddressItemInTableView(WebAddresItem item)
+    {
+        if (item == null)
+            return;
+        final WebAddresItem selectingItem = item;
+        Platform.runLater(new Runnable() {
+            public void run() {
+                tableViewWebPages.requestFocus();
+                tableViewWebPages.getSelectionModel().select(selectingItem);
+                int iSelected = tableViewWebPages.getSelectionModel().getFocusedIndex();
+                if (iSelected != -1) {
+                    tableViewWebPages.getFocusModel().focus(iSelected);
+                    tableViewWebPages.scrollTo(iSelected);
+                                    /* under swing time:
+                                    int rowIndex = iSelected;
+                                    int columnIndex = 0;
+                                    boolean includeSpacing = true;
+                                    Rectangle cellRect = tableViewWebPages.getCellRect(rowIndex, columnIndex, includeSpacing);
+                                    tableViewWebPages.scrollRectToVisible(cellRect);
+                                     */
+                }
+            }
+        });
+    }
+
     private void readJsonConfigFile()
     {
         File selectedwebaddressFiler = getSelectedWebAddressFile();
@@ -1116,24 +1182,7 @@ public class WebPagesController {
                 {
                     if (item.getOrder() == iSelect) {
                         selectingItem = item;
-                        Platform.runLater(new Runnable() {
-                            public void run() {
-                                tableViewWebPages.requestFocus();
-                                tableViewWebPages.getSelectionModel().select(selectingItem);
-                                int iSelected = tableViewWebPages.getSelectionModel().getFocusedIndex();
-                                if (iSelected != -1) {
-                                    tableViewWebPages.getFocusModel().focus(iSelected);
-                                    tableViewWebPages.scrollTo(iSelected);
-                                    /* under swing time:
-                                    int rowIndex = iSelected;
-                                    int columnIndex = 0;
-                                    boolean includeSpacing = true;
-                                    Rectangle cellRect = tableViewWebPages.getCellRect(rowIndex, columnIndex, includeSpacing);
-                                    tableViewWebPages.scrollRectToVisible(cellRect);
-                                     */
-                                }
-                            }
-                        });
+                        selectWebAddressItemInTableView(selectingItem);
                         break;
                     }
                 }
@@ -1243,6 +1292,50 @@ public class WebPagesController {
         }
     }
 
+    private boolean isWebAddressOk(WebAddresItem item)
+    {
+        ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelType = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+        if (textFieldWebAddress.getText().trim().length() == 0)
+        {
+            Alert alert = new Alert(Alert.AlertType.WARNING,
+                    "Web address text field is empty, no charactres!\nAdd an address." , okButtonType);
+            alert.setTitle("No saving row");
+            DialogPane dialogPane = alert.getDialogPane();
+            dialogPane.setStyle("-fx-font-weight: bold");
+            Optional<ButtonType> result = alert.showAndWait();
+
+            if (result.orElse(cancelType) == okButtonType)
+                return false;
+        }
+
+        String search = textFieldWebAddress.getText();
+        String webaddress = null;
+        int i = 0;
+        for (WebAddresItem item2 : webAddressRows) {
+            if (item2 == null) {
+                i++;
+                continue;
+            }
+            webaddress = item2.getWebaddress();
+            if (webaddress != null && webaddress.equals(search)
+                && item != item2 && item.getOrder() != item2.getOrder())
+            {
+                Alert alert = new Alert(Alert.AlertType.WARNING,
+                        "The same web address is existing all ready!\nChange it before saving." , okButtonType);
+                alert.setTitle("No saving row");
+                DialogPane dialogPane = alert.getDialogPane();
+                dialogPane.setStyle("-fx-font-weight: bold");
+                Optional<ButtonType> result = alert.showAndWait();
+
+                if (result.orElse(cancelType) == okButtonType)
+                    return false;
+                return false;
+            }
+        }
+        return true;
+    }
+
     @FXML
     protected void pressedButtonSave()
     {
@@ -1253,6 +1346,8 @@ public class WebPagesController {
             WebAddresItem item = tableViewWebPages.getSelectionModel().getSelectedItem();
             if (item != null)
             {
+                if (!isWebAddressOk(item))
+                    return;
                 item.setStar(comboStar.getValue());
                 item.setKeyword(textFieldKeyWord.getText());
                 item.setTitle(textFieldTitle.getText());
@@ -1290,6 +1385,8 @@ public class WebPagesController {
                 }
             }
         }
+        else
+            labelMsg.setText("No selected table row! No saving.");
     }
 
     @FXML
@@ -1328,6 +1425,8 @@ public class WebPagesController {
     protected void pressedButtonBookMark()
     {
      //   System.out.println("pressedButtonBookMark");
+        if (bPressedButtonNewRow)
+            return;
         WebAddresItem item = tableViewWebPages.getSelectionModel().getSelectedItem();
         if (item != null)
         {
@@ -1364,5 +1463,57 @@ public class WebPagesController {
                 }
             }
         }
+    }
+
+    @FXML
+    protected void pressedButtonNewRow()
+    {
+     //   System.out.println("pressedButtonNewRow");
+        bPressedButtonNewRow = true;
+        buttonNewRow.setDisable(true);
+        buttonAdd.setDisable(false);
+        buttonDelete.setDisable(true);
+        textFieldShow.setText("");
+        labelOrder.setText("");
+        labelDate.setText(getTodayString());
+        buttonBookMark.setSelected(false);
+        comboStar.setValue("");
+        textFieldKeyWord.setText("");
+        textFieldWebAddress.setText("");
+        textFieldTitle.setText("");
+
+        buttonDelete.setDisable(true);
+        buttonSave.setDisable(true);
+        buttonOpenBrowser.setDisable(true);
+    }
+
+    @FXML
+    protected void pressedButtonAdd()
+    {
+        String strWebAddress = textFieldWebAddress.getText();
+        String title = textFieldTitle.getText();
+        int iBookMark = (buttonBookMark.isSelected() ? 1 : 0);
+        String strStar = comboStar.getValue();
+        int iStars = (strStar == null || strStar.trim().length()==0 ? 0 : strStar.trim().length());
+        String itemKWord = textFieldKeyWord.getText();
+        int iOrder = webAddressRows.size() +1;
+        if (iOrder > 1)
+            iOrder = getMaxOrderValueFromRows();
+
+        WebAddresItem newItem = new WebAddresItem(iOrder, iStars, getTodayString(),
+                itemKWord, strWebAddress, title, iBookMark);;
+        if (!isWebAddressOk(newItem))
+            return;
+        webAddressRows.add(newItem);
+        saveWebAddressItems();
+        bPressedButtonNewRow = false;
+
+        buttonDelete.setDisable(false);
+        buttonSave.setDisable(false);
+        buttonOpenBrowser.setDisable(false);
+
+        buttonAdd.setDisable(true);
+        buttonNewRow.setDisable(false);
+        selectWebAddressItemInTableView(newItem);
     }
 }

@@ -1,5 +1,8 @@
 package com.metait.javafxwebpages;
 
+/**
+ * This class is storing last selected table row
+ */
 public class JsonConfig {
     public int getLastOrderNumber() {
         return iLastOrderNumber;
