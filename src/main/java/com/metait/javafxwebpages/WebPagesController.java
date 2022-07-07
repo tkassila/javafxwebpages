@@ -136,6 +136,8 @@ public class WebPagesController {
     private Button buttonNewRow;
     @FXML
     private FlowPane flowPaneEdit;
+    @FXML
+    private Button buttonCopyIntoClipBoard;
     /*
     @FXML
     private Label headerNumbere;
@@ -174,6 +176,7 @@ public class WebPagesController {
     private WebAddresItem jusAddedWebAddresItem = null;
     private boolean bPressedButtonNewRow = false;
     private String cnstUserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:94.0) Gecko/20100101 Firefox/94.0";
+    private TextField selectedRowTextField;
 
     private ChangeListener<Boolean> focuslistener = new ChangeListener<Boolean>() {
         @Override
@@ -193,18 +196,35 @@ public class WebPagesController {
         System.out.println("focus gained ObservableValue " +stackPane.getClass().getName());
         System.out.println("focus gained ObservableValue " +stackPane.getValue());
          */
-        if (textFieldWebAddress.isFocused())
+        if (textFieldWebAddress.isFocused()) {
+            selectedRowTextField = textFieldWebAddress;
             textFieldShow.setText(textFieldWebAddress.getText());
+        }
         else
         // System.out.println("textFieldKeyWord=" +textFieldKeyWord.isFocused());
-        if (textFieldKeyWord.isFocused())
+        if (textFieldKeyWord.isFocused()) {
+            selectedRowTextField = textFieldKeyWord;
             textFieldShow.setText(textFieldKeyWord.getText());
+        }
         else
         //System.out.println("textFieldTitle=" +textFieldTitle.isFocused());
-        if (textFieldTitle.isFocused())
+        if (textFieldTitle.isFocused()) {
+            selectedRowTextField = textFieldTitle;
             textFieldShow.setText(textFieldTitle.getText());
+        }
     }
 
+    @FXML
+    private void pressedButtonCopyIntoClipBoard()
+    {
+        if (selectedRowTextField != null)
+        {
+            Clipboard cb = Clipboard.getSystemClipboard();
+            final ClipboardContent content = new ClipboardContent();
+            content.putString(selectedRowTextField.getText());
+            cb.setContent(content);
+        }
+    }
     private void focusLostOfControl(ObservableValue stackPane)
     {
         /*
