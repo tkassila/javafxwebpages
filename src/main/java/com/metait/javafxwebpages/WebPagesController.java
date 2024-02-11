@@ -7,6 +7,9 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.input.*;
 import javafx.event.EventHandler;
 import javafx.scene.input.DragEvent;
@@ -20,6 +23,18 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.web.WebView;
 import javafx.scene.web.WebEngine;
 
+// import org.apache.http.client.HttpClient;
+import java.awt.*;
+import java.net.http.HttpClient;
+import java.net.HttpURLConnection;
+import javax.net.ssl.*;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
 import java.util.Optional;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -28,7 +43,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.net.URISyntaxException;
-import java.awt.Desktop;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
@@ -41,11 +55,13 @@ import java.nio.file.Path;
 
 import com.google.gson.Gson;
 
+import java.net.Socket;
 import com.metait.javafxwebpages.datarow.WebAddresItem;
 import com.metait.javafxwebpages.datarow.JSONWebAddress;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
+import com.metait.javafxwebpages.InvalidCertificateHostVerifier;
 
 /**
  * This class is the main controller of the application.
@@ -489,8 +505,6 @@ public class WebPagesController {
             @Override
             public void handle(WindowEvent t) {
                 appIsClosing();
-                Platform.exit();
-                System.exit(0);
             }
         });
     }
@@ -501,6 +515,9 @@ public class WebPagesController {
         System.out.println("loppu");
         WebAddresItem item = tableViewWebPages.getSelectionModel().getSelectedItem();
         saveSelectedItemPosition(item);
+        saveWebAddressItems();
+        Platform.exit();
+        System.exit(0);
     }
 
     private File getSelectedWebAddressFile()
@@ -568,6 +585,21 @@ public class WebPagesController {
         textFieldWebAddress.focusedProperty().addListener(focuslistener);
         textFieldKeyWord.focusedProperty().addListener(focuslistener);
         textFieldTitle.focusedProperty().addListener(focuslistener);
+
+        textFieldWebAddress.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
+            {
+                if (newValue != null && newValue.trim().length() > 0) {
+                    if (isStringWebAddressOK(newValue))
+                    {
+                        buttonAdd.setDisable(false);
+                    }
+                }
+                else
+                    buttonAdd.setDisable(true);
+            }
+        });
 
         radioButtonChangeListener = new ChangeListener<Boolean>() {
             @Override
@@ -1193,6 +1225,8 @@ public class WebPagesController {
             return;
         if (!selectedwebaddressFiler.exists())
             return;
+        if (selectedwebaddressFiler.length() == 0)
+            return;
         Reader reader = null;
         try {
             Path path = Paths.get(selectedwebaddressFiler.getAbsolutePath());
@@ -1237,6 +1271,8 @@ public class WebPagesController {
         if (rowFile == null)
             return;
         if (!rowFile.exists())
+            return;
+        if (rowFile.length() == 0)
             return;
         Reader reader = null;
         try {
@@ -1316,6 +1352,164 @@ public class WebPagesController {
                     }
                 }
         }
+    }
+
+    /*
+    public static HttpsURLConnection getConnection(boolean ignoreInvalidCertificate, String user, String pass,
+                                                   HttpRequestMethod httpRequestMethod,  URL url)
+            throws KeyManagementException, NoSuchAlgorithmException, IOException{
+        SSLContext ctx = SSLContext.getInstance("TLS");
+        if (ignoreInvalidCertificate){
+            ctx.init(null, new TrustManager[] { new InvalidCertificateTrustManager() }, null);
+        }
+        SSLContext.setDefault(ctx);
+
+        String authStr = user+":"+pass;
+        String authEncoded = Base64.encodeBytes(authStr.getBytes());
+
+        HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+
+        connection.setRequestMethod("GET");
+        connection.setDoOutput(true);
+        connection.setRequestProperty("Authorization", "Basic " + authEncoded);
+
+        if (ignoreInvalidCertificate){
+            connection.setHostnameVerifier(new InvalidCertificateHostVerifier());
+        }
+
+        return connection;
+    }
+    */
+
+    private int getHttpsStatusCodeAfterGet(URL url)
+          /*  throws NoSuchAlgorithmException */
+    {
+        int ret = -1;
+        var trustManager = new X509ExtendedTrustManager() {
+            @Override
+            public X509Certificate[] getAcceptedIssuers() {
+                return new X509Certificate[]{};
+            }
+
+            @Override
+            public void checkClientTrusted(X509Certificate[] chain, String authType) {
+            }
+
+            @Override
+            public void checkServerTrusted(X509Certificate[] chain, String authType) {
+            }
+
+            @Override
+            public void checkClientTrusted(X509Certificate[] chain, String authType, Socket socket) {
+            }
+
+            @Override
+            public void checkServerTrusted(X509Certificate[] chain, String authType, Socket socket) {
+            }
+
+            @Override
+            public void checkClientTrusted(X509Certificate[] chain, String authType, SSLEngine engine) {
+            }
+
+            @Override
+            public void checkServerTrusted(X509Certificate[] chain, String authType, SSLEngine engine) {
+            }
+        };
+        SSLContext sslContext = null;
+        try {
+            sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, new TrustManager[]{trustManager}, new SecureRandom());
+        } catch (NoSuchAlgorithmException e0) {
+            throw new RuntimeException(e0);
+        } catch (KeyManagementException e) {
+            throw new RuntimeException(e);
+        }
+
+        HttpRequest request = null;
+        try {
+            request = HttpRequest.newBuilder()
+                    .uri(url.toURI())
+                    .header("Content-Type", "text/html")
+                    .GET()
+                    .build();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+
+        HttpClient  client = HttpClient.newBuilder()
+                .sslContext(sslContext)
+                .build();
+        try {
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println(response.statusCode());
+            ret = response.statusCode();
+        } catch (InterruptedException e2) {
+            throw new RuntimeException(e2);
+        } catch (IOException e3) {
+            throw new RuntimeException(e3);
+        }
+        return ret;
+    }
+
+    boolean isValidURL(String url) {
+        try {
+            new URL(url).toURI();
+            return true;
+        } catch (MalformedURLException e) {
+            return false;
+        } catch (URISyntaxException e) {
+            return false;
+        }
+    }
+
+    private boolean isStringWebAddressOK(String strWebAddress)
+    {
+        boolean ret = false;
+        if (strWebAddress != null && strWebAddress.trim().length()>0)
+        {
+            URL url = null;
+           // try {
+                /*
+                url = new URL(strWebAddress);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                int responseCode = connection.getResponseCode();
+                if (responseCode != HttpURLConnection.HTTP_OK) {
+                  //  responseCode = getHttpsStatusCodeAfterGet(url);
+                   // if (responseCode != HttpURLConnection.HTTP_OK) {
+                 */
+                    if (!isValidURL(strWebAddress))
+                        showWrongWebAddressDialog();
+                    else
+                        ret = true;
+                   // }
+                /*
+                }
+                else
+                    ret = true;
+                 */
+            /*
+            }
+            catch (MalformedURLException e) {
+                showWrongWebAddressDialog();
+                return false;
+          } catch (IOException ioe) {
+                showWrongWebAddressDialog();
+                return false;
+          }
+             */
+        }
+        return ret;
+    }
+
+    private void showWrongWebAddressDialog(){
+        ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+
+        Alert alert = new Alert(Alert.AlertType.WARNING,
+                "The wrong web address in text field!" , okButtonType);
+        alert.setTitle("Wrong web address");
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.setStyle("-fx-font-weight: bold");
+        Optional<ButtonType> result = alert.showAndWait();
     }
 
     private boolean isWebAddressOk(WebAddresItem item)
@@ -1423,15 +1617,25 @@ public class WebPagesController {
         if (item != null)
         {
             String strUrl = item.getWebaddress();
-            try {
-                Desktop.getDesktop().browse(new URL(strUrl).toURI());
-            } catch (IOException e) {
-                e.printStackTrace();
-                labelMsg.setText("Error: " +e.getMessage());
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-                labelMsg.setText("Error: " +e.getMessage());
+            if(!Desktop.isDesktopSupported())//check if Desktop is supported by Platform or not
+            {
+                System.out.println("not supported");
+                return;
             }
+            EventQueue.invokeLater(() -> {
+                try {
+                    Desktop.getDesktop().browse(new URL(strUrl).toURI());
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                    labelMsg.setText("Error: " +e1.getMessage());
+                } catch (URISyntaxException e2) {
+                    e2.printStackTrace();
+                    labelMsg.setText("Error: " +e2.getMessage());
+                } catch (Exception e3) {
+                    e3.printStackTrace();
+                    labelMsg.setText("Error: " +e3.getMessage());
+                }
+            });
         }
     }
 

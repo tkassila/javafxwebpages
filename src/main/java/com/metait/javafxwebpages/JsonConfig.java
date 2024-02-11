@@ -12,5 +12,5 @@ public class JsonConfig {
         this.iLastOrderNumber = iLastOrderNumber;
     }
 
-    int iLastOrderNumber = -1;
+    public int iLastOrderNumber = -1;
 }
